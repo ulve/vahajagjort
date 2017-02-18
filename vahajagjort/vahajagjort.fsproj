@@ -49,7 +49,7 @@
       <Paket>True</Paket>
     </Content>
     <Compile Include="serializer.fs" />
-    <Compile Include="reporting.fs" />
+    <Compile Include="restish.fs" />
     <Compile Include="dictionaryStorage.fs" />    
     <Compile Include="vahajagjort.fs" />    
   </ItemGroup>
