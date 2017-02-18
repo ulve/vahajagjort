@@ -1,4 +1,4 @@
-namespace Vahajagjort.Reporting
+namespace Vahajagjort.Restish
 
 [<AutoOpen>]
 module Restish =

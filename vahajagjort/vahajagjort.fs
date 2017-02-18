@@ -7,7 +7,7 @@ module Program =
     open Suave.Successful
     open Suave.WebPart
     open Suave.Utils.Choice
-    open Vahajagjort.Reporting
+    open Vahajagjort.Restish
     open Vahajagjort.Db
     open Vahajagjort.Serializer
     open System.Collections.Generic
@@ -29,13 +29,13 @@ module Program =
         let doneSerializer = Serializer.serialize donePath
 
         let doneWebPart = restish "done" {
-            GetAll = fun () -> Doing.getAll doneStorage
-            Create = Doing.create doneStorage doneCreate doneSerializer
-            Update = Doing.updateItem doneStorage doneCreate doneGetId doneSerializer
-            Delete = Doing.deleteItem doneStorage doneSerializer
-            GetById = Doing.getItem doneStorage
-            UpdateById = Doing.updateItemById doneStorage doneCreate doneSerializer
-            IsExists = Doing.isExists doneStorage
+            GetAll = fun () -> DictionaryStorage.getAll doneStorage
+            Create = DictionaryStorage.create doneStorage doneCreate doneSerializer
+            Update = DictionaryStorage.updateItem doneStorage doneCreate doneGetId doneSerializer
+            Delete = DictionaryStorage.deleteItem doneStorage doneSerializer
+            GetById = DictionaryStorage.getItem doneStorage
+            UpdateById = DictionaryStorage.updateItemById doneStorage doneCreate doneSerializer
+            IsExists = DictionaryStorage.isExists doneStorage
         }
 
         let doingPath = "./doing.json"
@@ -48,13 +48,13 @@ module Program =
         let doingSerializer = Serializer.serialize doingPath
 
         let doingWebPart = restish "doing" {
-            GetAll = fun () -> Doing.getAll doingStorage
-            Create = Doing.create doingStorage doingCreate doingSerializer
-            Update = Doing.updateItem doingStorage doingCreate doingGetId doingSerializer
-            Delete = Doing.deleteItem doingStorage doingSerializer
-            GetById = Doing.getItem doingStorage
-            UpdateById = Doing.updateItemById doingStorage doingCreate doingSerializer
-            IsExists = Doing.isExists doingStorage
+            GetAll = fun () -> DictionaryStorage.getAll doingStorage
+            Create = DictionaryStorage.create doingStorage doingCreate doingSerializer
+            Update = DictionaryStorage.updateItem doingStorage doingCreate doingGetId doingSerializer
+            Delete = DictionaryStorage.deleteItem doingStorage doingSerializer
+            GetById = DictionaryStorage.getItem doingStorage
+            UpdateById = DictionaryStorage.updateItemById doingStorage doingCreate doingSerializer
+            IsExists = DictionaryStorage.isExists doingStorage
         } 
         
         startWebServer defaultConfig (choose [doneWebPart; doingWebPart])
