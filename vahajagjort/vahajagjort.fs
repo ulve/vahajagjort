@@ -13,7 +13,7 @@ module Program =
     open System.Collections.Generic
     open System
         
-    type BlockItem = { Id: int; Person:string; Text:string; Date:DateTime }
+    type BlockingItem = { Id: int; Person:string; Text:string; Date:DateTime }
     type DoingItem = { Id: int; Person:string; Text:string; Date:DateTime }   
     type DoneItem  = { Id: int; Person:string; Text:string; Date:DateTime }
 
@@ -57,5 +57,24 @@ module Program =
             IsExists = DictionaryStorage.isExists doingStorage
         } 
         
-        startWebServer defaultConfig (choose [doneWebPart; doingWebPart])
+        let blockingPath = "./blocking.json"
+        let blockingStorage = match Serializer.deserialize blockingPath with
+                              | Some a -> a
+                              | None -> new Dictionary<int, BlockingItem>() 
+        
+        let blockingCreate a (b:BlockingItem) = {BlockingItem.Id = a; Person = b.Person; Text = b.Text; Date = DateTime.Now}
+        let blockingGetId (a:BlockingItem) = a.Id
+        let blockingSerializer = Serializer.serialize blockingPath
+
+        let blockingWebPart = restish "blocking" {
+            GetAll = fun () -> DictionaryStorage.getAll blockingStorage
+            Create = DictionaryStorage.create blockingStorage blockingCreate blockingSerializer
+            Update = DictionaryStorage.updateItem blockingStorage blockingCreate blockingGetId blockingSerializer
+            Delete = DictionaryStorage.deleteItem blockingStorage blockingSerializer
+            GetById = DictionaryStorage.getItem blockingStorage
+            UpdateById = DictionaryStorage.updateItemById blockingStorage blockingCreate blockingSerializer
+            IsExists = DictionaryStorage.isExists blockingStorage
+        } 
+
+        startWebServer defaultConfig (choose [doneWebPart; doingWebPart; blockingWebPart])
         0
