@@ -38,8 +38,8 @@ module Restish =
             System.Text.Encoding.UTF8.GetString(rawForm)
         req.rawForm |> getString |> fromJson<'a>
 
-    let restish resource = 
-        let resourcePath = "/reporting"
+    let restish resourceName resource = 
+        let resourcePath = "/" + resourceName
 
         let badRequest = BAD_REQUEST "Resource not found"
         
