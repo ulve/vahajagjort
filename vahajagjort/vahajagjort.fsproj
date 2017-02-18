@@ -50,8 +50,7 @@
     </Content>
     <Compile Include="serializer.fs" />
     <Compile Include="reporting.fs" />
-    <Compile Include="doing.fs" />
-    <Compile Include="done.fs" />
+    <Compile Include="dictionaryStorage.fs" />    
     <Compile Include="vahajagjort.fs" />    
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />

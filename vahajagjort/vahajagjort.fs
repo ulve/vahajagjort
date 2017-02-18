@@ -12,31 +12,41 @@ module Program =
     open System.Collections.Generic
     open System
         
-    type Block = {Id: int; Person:string; Text:string; Date:DateTime}
+    type BlockItem = { Id: int; Person:string; Text:string; Date:DateTime }
+    type DoingItem = { Id: int; Person:string; Text:string; Date:DateTime }   
+    type DoneItem  = { Id: int; Person:string; Text:string; Date:DateTime }
 
     [<EntryPoint>]
     let main _ =                
-        
+        let doneStorage = new Dictionary<int, DoneItem>()            
+        doneStorage.Add(0, { Id = 0; Person= "olov.johansson@kronofogden.se"; Text = "Fixade SARA-1234"; Date = DateTime.Now});
+        let doneCreate a b = {DoneItem.Id = a; Person = b.Person; Text = b.Text; Date = DateTime.Now}
+        let doneGetId a = a.Id
+
         let doneWebPart = restish "done" {
-            GetAll = Done.getAll
-            Create = Done.create
-            Update = Done.updateItem
-            Delete = Done.deleteItem
-            GetById = Done.getItem
-            UpdateById = Done.updateItemById
-            IsExists = Done.isExists
+            GetAll = fun () -> Doing.getAll doneStorage
+            Create = Doing.create doneStorage doneCreate
+            Update = Doing.updateItem doneStorage doneCreate doneGetId
+            Delete = Doing.deleteItem doneStorage
+            GetById = Doing.getItem doneStorage
+            UpdateById = Doing.updateItemById doneStorage doneCreate
+            IsExists = Doing.isExists doneStorage
         }
 
-        Doing.init ()
+        let doingStorage = new Dictionary<int, DoingItem>()    
+        doingStorage.Add(0, { Id = 0; Person= "paula.berglund@kronofogden.se"; Text = "Fixade SARA-4321"; Date = DateTime.Now});
+        let doingCreate a (b:DoingItem) = {DoingItem.Id = a; Person = b.Person; Text = b.Text; Date = DateTime.Now}
+
+        let doingGetId (a:DoingItem) = a.Id
 
         let doingWebPart = restish "doing" {
-            GetAll = Doing.getAll
-            Create = Doing.create
-            Update = Doing.updateItem
-            Delete = Doing.deleteItem
-            GetById = Doing.getItem
-            UpdateById = Doing.updateItemById
-            IsExists = Doing.isExists
+            GetAll = fun () -> Doing.getAll doingStorage
+            Create = Doing.create doingStorage doingCreate
+            Update = Doing.updateItem doingStorage doingCreate doingGetId
+            Delete = Doing.deleteItem doingStorage
+            GetById = Doing.getItem doingStorage
+            UpdateById = Doing.updateItemById doingStorage doingCreate
+            IsExists = Doing.isExists doingStorage
         } 
         
         startWebServer defaultConfig (choose [doneWebPart; doingWebPart])
