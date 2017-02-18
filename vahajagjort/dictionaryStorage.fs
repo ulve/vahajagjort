@@ -4,36 +4,27 @@ open System.Collections.Generic
 open System
 open Vahajagjort.Serializer
 
-module Doing =         
-   
-    // let init<'a> path =
-    //     match Serializer.deserialize path with
-    //     | Some a -> storage <- a
-    //     | None -> sotra
-
-    // let private serialize path =
-    //     Serializer.serialize storage path            
-
+module Doing =                      
     let getAll<'a> (storage:Dictionary<int, 'a>) =
         storage.Values |> Seq.map(id)
 
-    let create<'a> (storage:Dictionary<int, 'a>) (fn: int -> 'a -> 'a) item =
+    let create<'a> (storage:Dictionary<int, 'a>) (fn: int -> 'a -> 'a) serializer item =
         let id = storage.Values.Count + 1
         let newItem = fn id item
         storage.Add(id, newItem)        
         newItem
 
-    let updateItemById<'a> (storage:Dictionary<int, 'a>) (fn: int -> 'a -> 'a) id item = 
+    let updateItemById<'a> (storage:Dictionary<int, 'a>) (fn: int -> 'a -> 'a) serializer id item = 
         if storage.ContainsKey(id) then
             storage.[id] <- fn id item            
             Some item
         else
             None
     
-    let updateItem<'a> (storage:Dictionary<int, 'a>) (creator: int -> 'a -> 'a) (getId: 'a -> int) item =
-        updateItemById storage creator (getId item) item
+    let updateItem<'a> (storage:Dictionary<int, 'a>) (creator: int -> 'a -> 'a) (getId: 'a -> int) serializer item =
+        updateItemById storage creator serializer (getId item) item
 
-    let deleteItem<'a> (storage:Dictionary<int, 'a>) id = 
+    let deleteItem<'a> (storage:Dictionary<int, 'a>) serializer id = 
         storage.Remove(id) |> ignore
         
     let getItem<'a> (storage:Dictionary<int, 'a>) id =

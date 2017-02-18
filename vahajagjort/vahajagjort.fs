@@ -9,6 +9,7 @@ module Program =
     open Suave.Utils.Choice
     open Vahajagjort.Reporting
     open Vahajagjort.Db
+    open Vahajagjort.Serializer
     open System.Collections.Generic
     open System
         
@@ -18,34 +19,41 @@ module Program =
 
     [<EntryPoint>]
     let main _ =                
-        let doneStorage = new Dictionary<int, DoneItem>()            
-        doneStorage.Add(0, { Id = 0; Person= "olov.johansson@kronofogden.se"; Text = "Fixade SARA-1234"; Date = DateTime.Now});
+        let donePath = "./done.json"
+        let doneStorage = match Serializer.deserialize donePath with
+                          | Some a -> a
+                          | None -> new Dictionary<int, DoneItem>() 
+        
         let doneCreate a b = {DoneItem.Id = a; Person = b.Person; Text = b.Text; Date = DateTime.Now}
-        let doneGetId a = a.Id
+        let doneGetId a = a.Id        
+        let doneSerializer = Serializer.serialize donePath
 
         let doneWebPart = restish "done" {
             GetAll = fun () -> Doing.getAll doneStorage
-            Create = Doing.create doneStorage doneCreate
-            Update = Doing.updateItem doneStorage doneCreate doneGetId
-            Delete = Doing.deleteItem doneStorage
+            Create = Doing.create doneStorage doneCreate doneSerializer
+            Update = Doing.updateItem doneStorage doneCreate doneGetId doneSerializer
+            Delete = Doing.deleteItem doneStorage doneSerializer
             GetById = Doing.getItem doneStorage
-            UpdateById = Doing.updateItemById doneStorage doneCreate
+            UpdateById = Doing.updateItemById doneStorage doneCreate doneSerializer
             IsExists = Doing.isExists doneStorage
         }
 
-        let doingStorage = new Dictionary<int, DoingItem>()    
-        doingStorage.Add(0, { Id = 0; Person= "paula.berglund@kronofogden.se"; Text = "Fixade SARA-4321"; Date = DateTime.Now});
+        let doingPath = "./doing.json"
+        let doingStorage = match Serializer.deserialize doingPath with
+                           | Some a -> a
+                           | None -> new Dictionary<int, DoingItem>() 
+        
         let doingCreate a (b:DoingItem) = {DoingItem.Id = a; Person = b.Person; Text = b.Text; Date = DateTime.Now}
-
         let doingGetId (a:DoingItem) = a.Id
+        let doingSerializer = Serializer.serialize doingPath
 
         let doingWebPart = restish "doing" {
             GetAll = fun () -> Doing.getAll doingStorage
-            Create = Doing.create doingStorage doingCreate
-            Update = Doing.updateItem doingStorage doingCreate doingGetId
-            Delete = Doing.deleteItem doingStorage
+            Create = Doing.create doingStorage doingCreate doingSerializer
+            Update = Doing.updateItem doingStorage doingCreate doingGetId doingSerializer
+            Delete = Doing.deleteItem doingStorage doingSerializer
             GetById = Doing.getItem doingStorage
-            UpdateById = Doing.updateItemById doingStorage doingCreate
+            UpdateById = Doing.updateItemById doingStorage doingCreate doingSerializer
             IsExists = Doing.isExists doingStorage
         } 
         

@@ -5,7 +5,7 @@ open Newtonsoft.Json.Serialization
 open System.IO
 
 module Serializer = 
-    let serialize a (path:string) =
+    let serialize (path:string) a =
         let jsonSerializerSettings = new JsonSerializerSettings()
         jsonSerializerSettings.ContractResolver <- new CamelCasePropertyNamesContractResolver()
                 
