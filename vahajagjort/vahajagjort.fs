@@ -22,7 +22,7 @@ module Program =
         | Some a -> a
         | None -> new Dictionary<int, 'a>()  
 
-    let setupWebPart<'a> path name create getId =         
+    let setupWebPart path name create getId =         
         let storage = initStorage path        
         let serializer = Serializer.serialize path
 
@@ -38,9 +38,9 @@ module Program =
 
     [<EntryPoint>]
     let main _ =                
-        let doneWebPart = setupWebPart<DoneItem> "./done.json" "done" (fun a b -> {Id = a; Person = b.Person; Text = b.Text; Date = DateTime.Now}) (fun a -> a.Id)
-        let doingWebPart = setupWebPart<DoingItem> "./doing.json" "done" (fun a b -> {Id = a; Person = b.Person; Text = b.Text; Date = DateTime.Now}) (fun a -> a.Id)
-        let blockingWebPart = setupWebPart<BlockingItem> "./blocking.json" "done" (fun a b -> {Id = a; Person = b.Person; Text = b.Text; Date = DateTime.Now}) (fun a -> a.Id)
+        let doneWebPart = setupWebPart "./done.json" "done" (fun a b -> {Id = a; Person = b.Person; Text = b.Text; Date = DateTime.Now}) (fun a -> a.Id)
+        let doingWebPart = setupWebPart "./doing.json" "done" (fun a b -> {DoingItem.Id = a; Person = b.Person; Text = b.Text; Date = DateTime.Now}) (fun a -> a.Id)
+        let blockingWebPart = setupWebPart "./blocking.json" "done" (fun a b -> {BlockingItem.Id = a; Person = b.Person; Text = b.Text; Date = DateTime.Now}) (fun a -> a.Id)
         
         startWebServer defaultConfig (choose [doneWebPart; doingWebPart; blockingWebPart])
         0
