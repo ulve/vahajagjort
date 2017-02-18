@@ -8,37 +8,36 @@ module Program =
     open Suave.WebPart
     open Suave.Utils.Choice
     open Vahajagjort.Reporting
+    open Vahajagjort.Db
+    open System.Collections.Generic
     open System
+        
+    type Block = {Id: int; Person:string; Text:string; Date:DateTime}
 
     [<EntryPoint>]
-    let main _ =
-        let doneWriter a =
-            printfn "Hejdå"
-            Some a
-
+    let main _ =                
+        
         let doneWebPart = restish "done" {
-            GetAll = fun () -> Seq.empty
-            Create = fun a -> a
-            Update = fun a -> Some a
-            Delete = fun a -> ()       
-            GetById = doneWriter
-            UpdateById = fun a b -> Some b
-            IsExists = fun a -> true
+            GetAll = Done.getAll
+            Create = Done.create
+            Update = Done.updateItem
+            Delete = Done.deleteItem
+            GetById = Done.getItem
+            UpdateById = Done.updateItemById
+            IsExists = Done.isExists
         }
 
-        let doingWriter a =
-            printfn "Hej"
-            Some a
+        Doing.init ()
 
         let doingWebPart = restish "doing" {
-            GetAll = fun () -> Seq.empty
-            Create = fun a -> a
-            Update = fun a -> Some a
-            Delete = fun a -> ()       
-            GetById = doingWriter
-            UpdateById = fun a b -> Some b
-            IsExists = fun a -> true
+            GetAll = Doing.getAll
+            Create = Doing.create
+            Update = Doing.updateItem
+            Delete = Doing.deleteItem
+            GetById = Doing.getItem
+            UpdateById = Doing.updateItemById
+            IsExists = Doing.isExists
         } 
         
-        startWebServer defaultConfig (choose [doneWebPart;doingWebPart])
+        startWebServer defaultConfig (choose [doneWebPart; doingWebPart])
         0
