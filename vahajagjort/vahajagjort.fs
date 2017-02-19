@@ -28,9 +28,7 @@ module Program =
         let agent = MailboxProcessor.Start(fun inbox ->
             let rec messageLoop () = async {
                 let! msg = inbox.Receive()
-                System.Threading.Thread.Sleep(4000)
                 Serializer.serialize path msg
-                printfn "Wrote %s to file" path
                 return! messageLoop ()
                 }
             messageLoop()
