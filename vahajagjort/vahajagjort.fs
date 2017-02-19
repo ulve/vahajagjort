@@ -18,10 +18,10 @@ module Program =
     type DoingItem    = { Id: int; Person:string; Text:string; Date:DateTime }
     type DoneItem     = { Id: int; Person:string; Text:string; Date:DateTime }
 
-    let initStorage path = 
+    let initStorage path =
         match Serializer.deserialize path with
         | Some a -> a
-        | None -> new ConcurrentDictionary<int, 'a>()  
+        | None -> new ConcurrentDictionary<int, 'a>()
 
     let setupWebPart path name create getId =
         let storage = initStorage path
@@ -32,7 +32,7 @@ module Program =
                 return! messageLoop ()
                 }
             messageLoop()
-        )        
+        )
 
         restish name {
             GetAll = fun () -> DictionaryStorage.getAll storage
@@ -45,10 +45,10 @@ module Program =
         }
 
     [<EntryPoint>]
-    let main _ =                        
+    let main _ =
         let doneWebPart = setupWebPart "./done.json" "done" (fun a b -> {Id = a; Person = b.Person; Text = b.Text; Date = DateTime.Now}) (fun a -> a.Id)
         let doingWebPart = setupWebPart "./doing.json" "doing" (fun a b -> {DoingItem.Id = a; Person = b.Person; Text = b.Text; Date = DateTime.Now}) (fun a -> a.Id)
         let blockingWebPart = setupWebPart "./blocking.json" "blocking" (fun a b -> {BlockingItem.Id = a; Person = b.Person; Text = b.Text; Date = DateTime.Now}) (fun a -> a.Id)
-        
+
         startWebServer defaultConfig (choose [doneWebPart; doingWebPart; blockingWebPart])
         0
