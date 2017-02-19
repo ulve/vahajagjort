@@ -4,21 +4,21 @@ open System.Collections.Generic
 open System
 open Vahajagjort.Serializer
 
-module DictionaryStorage =                      
+module DictionaryStorage =
     let getAll (storage:IDictionary<int, 'a>) =
         storage.Values |> Seq.map(id)
 
     let create (storage:IDictionary<int, 'a>) (fn: int -> 'a -> 'a) serializer item =
         let id = storage.Values.Count + 1
         let newItem = fn id item
-        storage.Add(id, newItem)     
-        serializer storage   
+        storage.Add(id, newItem)
+        serializer storage
         newItem
 
     let updateItemById (storage:IDictionary<int, 'a>) (fn: int -> 'a -> 'a) serializer id item = 
         if storage.ContainsKey(id) then
-            storage.[id] <- fn id item       
-            serializer storage     
+            storage.[id] <- fn id item
+            serializer storage
             Some item
         else
             None
@@ -37,4 +37,4 @@ module DictionaryStorage =
         else
             None
 
-    let isExists (storage:IDictionary<int, 'a>) = storage.ContainsKey    
+    let isExists (storage:IDictionary<int, 'a>) = storage.ContainsKey

@@ -1,7 +1,7 @@
 namespace Vahajagjort.Program
 
 module Program =
-    open Suave.Web  
+    open Suave.Web
     open Suave.Filters
     open Suave.Operators
     open Suave.Successful
@@ -12,10 +12,10 @@ module Program =
     open Vahajagjort.Serializer
     open System.Collections.Generic
     open System.Collections.Concurrent
-    open System    
-        
+    open System
+
     type BlockingItem = { Id: int; Person:string; Text:string; Date:DateTime }
-    type DoingItem    = { Id: int; Person:string; Text:string; Date:DateTime }   
+    type DoingItem    = { Id: int; Person:string; Text:string; Date:DateTime }
     type DoneItem     = { Id: int; Person:string; Text:string; Date:DateTime }
 
     let initStorage path = 
@@ -23,8 +23,8 @@ module Program =
         | Some a -> a
         | None -> new ConcurrentDictionary<int, 'a>()  
 
-    let setupWebPart path name create getId =         
-        let storage = initStorage path                                       
+    let setupWebPart path name create getId =
+        let storage = initStorage path
         let agent = MailboxProcessor.Start(fun inbox ->
             let rec messageLoop () = async {
                 let! msg = inbox.Receive()
