@@ -4,8 +4,8 @@ sudo: false  # use the new container-based Travis infrastructure
 
 install:
   - nvm install 6
-  - nvm install -g yarn
-  - npm install --global elm
+  - npm install -g yarn
+  - npm install -g elm
 
 script: 
   - ./build.sh Build
