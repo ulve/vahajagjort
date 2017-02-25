@@ -1,5 +1,5 @@
 #!/bin/sh
 cd ./frontend
 yarn
-elm-make -y
+elm-make --yes
 npm run build
