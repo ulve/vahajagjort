@@ -2,5 +2,11 @@ language: csharp
 
 sudo: false  # use the new container-based Travis infrastructure
 
+install:
+  - nvm install 6
+  - npm install -g yarn
+  - npm install -g elm
+
 script: 
   - ./build.sh Build
+  - ./frontend/build.sh
