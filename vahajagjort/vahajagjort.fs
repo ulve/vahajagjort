@@ -6,6 +6,8 @@ module Program =
     open Suave.Operators
     open Suave.Successful
     open Suave.WebPart
+    open Suave.CORS
+    open Suave.Writers
     open Suave.Utils.Choice
     open Vahajagjort.Restish
     open Vahajagjort.Db
@@ -46,9 +48,11 @@ module Program =
 
     [<EntryPoint>]
     let main _ =
+        let corsConfig = { defaultCORSConfig with allowedUris = InclusiveOption.Some [ "http://localhost:3000" ] }
+
         let doneWebPart = setupWebPart "./done.json" "done" (fun a b -> {Id = a; Person = b.Person; Text = b.Text; Date = DateTime.Now}) (fun a -> a.Id)
         let doingWebPart = setupWebPart "./doing.json" "doing" (fun a b -> {DoingItem.Id = a; Person = b.Person; Text = b.Text; Date = DateTime.Now}) (fun a -> a.Id)
         let blockingWebPart = setupWebPart "./blocking.json" "blocking" (fun a b -> {BlockingItem.Id = a; Person = b.Person; Text = b.Text; Date = DateTime.Now}) (fun a -> a.Id)
 
-        startWebServer defaultConfig (choose [doneWebPart; doingWebPart; blockingWebPart])
+        startWebServer defaultConfig (choose [cors corsConfig >=> doneWebPart  ; doingWebPart; blockingWebPart])
         0
